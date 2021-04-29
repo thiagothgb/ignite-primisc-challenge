@@ -1,1 +1,23 @@
-// TODO
+.header {
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  padding: 6rem 1.5rem 0 1.5rem;
+  width: 100%;
+  max-width: 740px;
+
+  img {
+    margin-right: 0.8rem;
+
+    &:last-child {
+      margin-left: -0.5rem;
+    }
+
+    &:first-child,
+    &:last-child {
+      margin-bottom: 0.3rem;
+    }
+  }
+}
