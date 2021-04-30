@@ -1,1 +1,44 @@
-// TODO
+.header {
+  margin-top: 2.625rem;
+}
+
+.container {
+  h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 3.63rem;
+    color: var(--white-heading);
+  }
+
+  div {
+    display: flex;
+    flex-direction: row;
+    margin-top: 1.5625rem;
+
+    time,
+    span {
+      display: flex;
+      font-weight: 400;
+      flex-direction: row;
+      align-items: center;
+      font-size: 0.875rem;
+      line-height: 1.058rem;
+      color: var(--gray-info);
+    }
+
+    time {
+      margin-right: 1.9168rem;
+    }
+
+    span {
+      & + span {
+        margin-left: 1.9168rem;
+      }
+    }
+
+    svg {
+      font-size: 1.2rem;
+      margin-right: 0.625rem;
+    }
+  }
+}
