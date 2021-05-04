@@ -1,12 +1,14 @@
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import { format } from 'date-fns';
+
 import ptBR from 'date-fns/locale/pt-BR';
 import Prismic from '@prismicio/client';
 import { AiOutlineCalendar } from 'react-icons/ai';
 import { FiUser } from 'react-icons/fi';
 import Link from 'next/link';
 import { useState } from 'react';
+import Header from '../components/Header';
 import { getPrismicClient } from '../services/prismic';
 import commonStyles from '../styles/common.module.scss';
 import styles from './home.module.scss';
@@ -76,7 +78,7 @@ export default function Home({ postsPagination }: HomeProps) {
       <Head>
         <title>Space traveling</title>
       </Head>
-
+      <Header />
       <main className={commonStyles.container}>
         {posts.map(post => {
           return (
