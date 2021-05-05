@@ -5,3 +5,28 @@
   margin: 0 auto;
   margin-top: 3.82rem;
 }
+
+.previewButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  margin-top: 5.5rem;
+  border: 0;
+  border-radius: 0.25rem;
+  width: 100%;
+  max-width: 700px;
+  height: 3.625rem;
+  background: var(--white-heading);
+  text-align: center;
+
+  cursor: pointer;
+
+  a {
+    color: var(--black-background);
+    font-size: 1.125rem;
+    line-height: 1.36125rem;
+    font-weight: 600;
+    text-align: justify;
+  }
+}

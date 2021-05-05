@@ -1,4 +1,5 @@
 import { GetStaticPaths, GetStaticProps } from 'next';
+import Link from 'next/link';
 import Prismic from '@prismicio/client';
 import ptBR from 'date-fns/locale/pt-BR';
 import { RichText } from 'prismic-dom';
@@ -11,9 +12,13 @@ import { getPrismicClient } from '../../services/prismic';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './post.module.scss';
 import Header from '../../components/Header';
+import Comments from '../../components/Comments';
+import PreviewButton from '../../components/PreviewButton';
 
 interface Post {
+  uid?: string;
   first_publication_date: string | null;
+  last_publication_date: string | null;
   data: {
     title: string;
     banner: {
@@ -31,9 +36,12 @@ interface Post {
 
 interface PostProps {
   post: Post;
+  prevpost?: Post;
+  nextpost?: Post;
+  preview: boolean;
 }
 
-export default function Post({ post }: PostProps) {
+export default function Post({ post, prevpost, nextpost, preview }: PostProps) {
   const router = useRouter();
 
   if (router.isFallback) {
@@ -71,7 +79,18 @@ export default function Post({ post }: PostProps) {
               <BiTimeFive />4 min
             </span>
           </div>
-          <article>
+          {post.last_publication_date && (
+            <i className={styles.edited}>
+              {format(
+                new Date(post.last_publication_date),
+                "'* editado em 'dd MMM yyyy', às 'HH:mm",
+                {
+                  locale: ptBR,
+                }
+              )}
+            </i>
+          )}
+          <article className={styles.article}>
             {post.data.content.map((item, index) => {
               return (
                 <section key={`${item.heading}-${String(index)}`}>
@@ -87,6 +106,38 @@ export default function Post({ post }: PostProps) {
             })}
           </article>
         </section>
+
+        <div className={`${commonStyles.container} ${styles.postActions}`}>
+          <hr />
+          <div>
+            <aside>
+              {prevpost && (
+                <>
+                  <span>{prevpost.data.title}</span>
+                  <b>
+                    <Link href={`/post/${prevpost.uid}`}>
+                      <a>Post anterior </a>
+                    </Link>
+                  </b>
+                </>
+              )}
+            </aside>
+            <aside>
+              {nextpost && (
+                <>
+                  <span>{nextpost.data.title}</span>
+                  <b>
+                    <Link href={`/post/${nextpost.uid}`}>
+                      <a>Próximo post </a>
+                    </Link>
+                  </b>
+                </>
+              )}
+            </aside>
+          </div>
+          <Comments />
+          {preview && <PreviewButton />}
+        </div>
       </main>
     </>
   );
@@ -111,15 +162,34 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps = async context => {
+export const getStaticProps: GetStaticProps = async ({
+  preview = false,
+  params,
+  previewData,
+}) => {
   const prismic = getPrismicClient();
 
-  const response = await prismic.getByUID(
-    'posts',
-    String(context.params.slug),
-    {}
-  );
-  const { first_publication_date, data, uid } = response;
+  const response = await prismic.getByUID('posts', String(params.slug), {
+    ref: previewData?.ref ?? null,
+  });
+
+  const prevpost = (
+    await prismic.query(Prismic.Predicates.at('document.type', 'posts'), {
+      pageSize: 1,
+      after: `${response.id}`,
+      orderings: '[document.first_publication_date desc]',
+    })
+  ).results[0];
+
+  const nextpost = (
+    await prismic.query(Prismic.Predicates.at('document.type', 'posts'), {
+      pageSize: 1,
+      after: `${response.id}`,
+      orderings: '[document.first_publication_date]',
+    })
+  ).results[0];
+
+  const { first_publication_date, last_publication_date, data, uid } = response;
 
   const { title, subtitle, author, banner, content } = data;
 
@@ -132,9 +202,11 @@ export const getStaticProps: GetStaticProps = async context => {
 
   return {
     props: {
+      preview,
       post: {
         uid,
         first_publication_date,
+        last_publication_date,
         data: {
           title,
           subtitle,
@@ -143,6 +215,8 @@ export const getStaticProps: GetStaticProps = async context => {
           content: contentFormatted,
         },
       } as Post,
+      prevpost: prevpost ? (prevpost as Post) : null,
+      nextpost: nextpost ? (nextpost as Post) : null,
     },
   };
 };

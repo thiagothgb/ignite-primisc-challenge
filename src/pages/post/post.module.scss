@@ -42,3 +42,61 @@
     }
   }
 }
+
+.edited {
+  display: block;
+  color: #bbbbbb;
+  font-size: 0.85rem;
+  margin-top: 1.125rem;
+}
+
+.article {
+  section {
+    margin: 2rem 0;
+
+    p {
+      font-size: 1.125rem;
+      line-height: 1.575rem;
+      text-align: justify;
+      font-weight: 400;
+
+      & + p {
+        margin-top: 1rem;
+      }
+    }
+  }
+}
+
+.postActions {
+  hr {
+    margin-top: -3rem;
+  }
+
+  div {
+    margin: 2.5rem 0;
+    display: flex;
+    text-align: left;
+    justify-content: space-between;
+
+    aside {
+      font-size: 1.125rem;
+      line-height: 1.3613rem;
+      font-weight: 400;
+      display: flex;
+      flex-direction: column;
+
+      b {
+        font-size: 1rem;
+        line-height: 1.1875rem;
+        font-weight: 600;
+        letter-spacing: -0.5px;
+        color: var(--pink-highlight);
+        margin-top: 0.25rem;
+      }
+
+      & + aside {
+        text-align: right;
+      }
+    }
+  }
+}
